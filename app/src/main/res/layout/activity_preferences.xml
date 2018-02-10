@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
+        android:id="@+id/rssFeed"
         android:hint="RSS feed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -40,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
+        android:id="@+id/maxTopics"
         android:hint="No max specified: no limit"
         android:digits="0123456789"
         android:inputType="number"
