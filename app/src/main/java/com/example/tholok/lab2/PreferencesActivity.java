@@ -20,10 +20,10 @@ import java.sql.Time;
 public class PreferencesActivity extends Activity {
 
     // names of prefs
-    private static final String RSS_FEED_PREF = "rssFeed";
-    private static final String INTERVAL_HOUR_PREF = "intervalHour";
-    private static final String INTERVAL_MINUTE_PREF = "intervalMinute";
-    private static final String MAX_TOPICS_PREF = "maxTopics";
+    public static final String RSS_FEED_PREF = "rssFeed";
+    public static final String INTERVAL_HOUR_PREF = "intervalHour";
+    public static final String INTERVAL_MINUTE_PREF = "intervalMinute";
+    public static final String MAX_TOPICS_PREF = "maxTopics";
 
     // save widgets as properties
     private TextView rssFeed;

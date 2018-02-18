@@ -16,7 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PreferencesActivity"></activity>
+        <activity android:name=".PreferencesActivity" />
+
+        <service
+            android:name=".RSSFetcherService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
