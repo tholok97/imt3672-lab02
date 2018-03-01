@@ -14,10 +14,13 @@ import static java.lang.Thread.sleep;
 
 public class RSSFetcherService extends Service {
 
+    DBHandler dbHandler;
+
     private static final String LOG_NAME = "rssservice";
 
     public RSSFetcherService() {
 
+        dbHandler = new DBHandler(this, null, null, -1);
 
         Log.d(LOG_NAME, "I was created!!");
 
@@ -30,8 +33,6 @@ public class RSSFetcherService extends Service {
 
         Log.d(LOG_NAME, "I was started!!");
 
-
-
         return Service.START_STICKY;
     }
 
@@ -40,23 +41,6 @@ public class RSSFetcherService extends Service {
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    private class DownloaderTask extends AsyncTask<URL, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(URL... params) {
-            // TBD
-
-            return true;
-        }
-
-        private boolean xmlParse(URL downloadPath) {
-            // TBD
-
-            return true;
-        }
-
     }
 
     private class DispatcherTask extends AsyncTask<Void, Void, Void> {
@@ -92,6 +76,9 @@ public class RSSFetcherService extends Service {
 
                 // do work
                 Log.d(LOG_NAME, "DOING WORK");
+
+                // TODO
+                dbHandler.addTopic(new Topic("From rss fetcher", "www.rss.com"));
 
 
                 // TODO: make the whole download thing work

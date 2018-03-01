@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
 
+
     private static final String LOG_NAME = "dbhandlerlog";
 
     private static final int DATABASE_VERSION = 1;
@@ -25,6 +26,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TOPIC = "_topic";
     public static final String COLUMN_LINK = "_link";
+
 
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -47,6 +49,14 @@ public class DBHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_TOPICS);
         onCreate(sqLiteDatabase);
+
+    }
+
+    public void clear() {
+
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_TOPICS, "", null);
+
     }
 
 
@@ -59,7 +69,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.insert(TABLE_TOPICS, null, values);
 
-        sqLiteDatabase.close();
+
     }
 
     // delete product from the database
@@ -68,41 +78,15 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.execSQL("DELETE FROM " + TABLE_TOPICS +
                 " WHERE " + COLUMN_TOPIC + " =\"" + topic + "\"");
+
     }
 
-    // print out the database as a string
-    public String toString() {
-        String dbString = "";
-
-
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-
-        String query = "SELECT * FROM " + TABLE_TOPICS;
-
-        Log.d(LOG_NAME, "doing query");
-        //Cursor point to a location in your results
-        Cursor c = sqLiteDatabase.rawQuery(query, null);
-
-        Log.d(LOG_NAME, "iterating through results");
-        while (c.moveToNext()) {
-            Log.d(LOG_NAME, "maybe found thing?");
-            if (c.getString(c.getColumnIndex(COLUMN_TOPIC)) != null) {
-                Log.d(LOG_NAME, "found thing");
-                dbString += c.getString(c.getColumnIndex(COLUMN_TOPIC));
-                dbString += "\n";
-            }
-        }
-
-        sqLiteDatabase.close();
-
-        return dbString;
-    }
 
     public ArrayList<Topic> getAllTopics() {
 
         ArrayList<Topic> topics = new ArrayList<>();
 
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         String query = "SELECT * FROM " + TABLE_TOPICS;
 
@@ -122,5 +106,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return topics;
 
     }
+
+
 
 }
