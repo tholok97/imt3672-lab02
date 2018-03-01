@@ -3,6 +3,7 @@ package com.example.tholok.lab2;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +28,6 @@ public class MainActivity extends Activity {
         // prepare dbhandler
         dbHandler = new DBHandler(this, null, null, -1);
 
-        // update list
-        onUpdatedDB();
 
         // TEST
         dbHandler.clear();
@@ -40,10 +39,8 @@ public class MainActivity extends Activity {
         startService(intent);
 
 
-        // fetch topics from db
-        SetTopicsTask setTopicsTask = new SetTopicsTask();
-        setTopicsTask.execute(dbHandler);
-
+        // update list
+        updateListView();
     }
 
     /**
@@ -61,7 +58,7 @@ public class MainActivity extends Activity {
      */
     public void fetchClick(View view) {
 
-        onUpdatedDB();
+        updateListView();
 
         // TODO. just show toast
         Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
@@ -70,12 +67,18 @@ public class MainActivity extends Activity {
     /**
      * when db updated -> fill list with stuff from db
      */
-    public void onUpdatedDB() {
+    public void updateListView() {
+        Log.d("settopictask", "running onUpdateDB. Starting AsyncTask");
         SetTopicsTask setTopicsTask = new SetTopicsTask();
         setTopicsTask.execute(dbHandler);
     }
 
     private class SetTopicsTask extends AsyncTask<DBHandler, Void, ArrayList<Topic>> {
+
+        public SetTopicsTask() {
+            Log.d("settopictask", "running constructor for SetTopicTask");
+
+        }
 
         @Override
         protected ArrayList<Topic> doInBackground(DBHandler... dbHandlers) {
@@ -90,6 +93,8 @@ public class MainActivity extends Activity {
         protected void onPostExecute(ArrayList<Topic> topics) {
             super.onPostExecute(topics);
 
+
+            Log.d("settopictask","running onPostExecute!");
 
 
 
