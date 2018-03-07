@@ -72,8 +72,7 @@ public class RSSFetcherService extends Service {
 
             // TBD
 
-            // sleep prefs amount of time -> do rss stuff
-
+            // sleep prefs amount of time then fetch topics, update db and notify MainActivity
             while (true) {
 
                 // fetch pref sleep
@@ -108,48 +107,36 @@ public class RSSFetcherService extends Service {
      */
     public static void fetch(final Context ctx, final DBHandler dbHandler) {
 
+        // get url from pref
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         String url = prefs.getString(PreferencesActivity.RSS_FEED_PREF, "");
 
+        // clear the database (new rss stuff will completely replace old ones)
         dbHandler.clear();
 
         Log.d(LOG_NAME, "starting url: " + url);
 
-        //url of RSS feed
+        // Make parser do work
         Parser parser = new Parser();
         parser.execute(url);
         parser.onFinish(new Parser.OnTaskCompleted() {
 
+
             @Override
             public void onTaskCompleted(ArrayList<Article> list) {
 
-                //what to do when the parsing is done
-                //the Array List contains all article's data. For example you can use it for your adapter.
-
                 Log.d(LOG_NAME, "task completed successfully");
 
-                ArrayList<Topic> topics = new ArrayList<>();
-
-                // WORKS
+                // for each topic -> debugprint and add to db
                 for (Article article : list) {
-
                     Log.d(LOG_NAME, ">> title: " + article.getTitle());
                     Log.d(LOG_NAME, ">> link: " + article.getLink());
                     Log.d(LOG_NAME, "--");
-
                     dbHandler.addTopic(new Topic(article.getTitle(), article.getLink()));
 
                 }
 
-
-                /*
-                 TODO:
-
-                 Update db with articles from rss. Store title and link.
-                 Notify MainActivity that it should update it's list view
-                 */
-
-
+                // notify MainActivity through broadcast receiver
                 Intent i = new Intent("android.intent.action.DATABASE_UPDATED");
                 ctx.sendBroadcast(i);
 
@@ -157,8 +144,8 @@ public class RSSFetcherService extends Service {
 
             @Override
             public void onError() {
-                //what to do in case of error
-                Log.d(LOG_NAME, "there was an error");
+                // TODO: handle more gracefully
+                Log.d(LOG_NAME, "Couldn't fetch from rss source :(");
             }
         });
 

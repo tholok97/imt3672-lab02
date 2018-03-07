@@ -153,8 +153,6 @@ public class MainActivity extends Activity {
 
             Log.d("settopictask","running onPostExecute!");
 
-
-
             ArrayAdapter arrayAdapter = new ArrayAdapter<Topic>(MainActivity.this, android.R.layout.simple_list_item_1, topics);
             ListView listView = (ListView) findViewById(R.id.contentList);
             listView.setAdapter(arrayAdapter);
