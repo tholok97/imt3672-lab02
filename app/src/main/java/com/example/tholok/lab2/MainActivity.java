@@ -1,10 +1,15 @@
 package com.example.tholok.lab2;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,12 +18,55 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.prof.rssparser.Article;
+import com.prof.rssparser.Parser;
+
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
+    private BroadcastReceiver mReceiver;
+
     private static final String LOG_NAME = "mainlog";
     private DBHandler dbHandler;
+
+    /*
+     Heavily inspired by http://inchoo.net/dev-talk/android-development/broadcast-receiver-from-activity/
+     */
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter(
+                "android.intent.action.DATABASE_UPDATED");
+
+        mReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                updateListView();
+
+            }
+        };
+        //registering our receiver
+        this.registerReceiver(mReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        //unregister our receiver
+        this.unregisterReceiver(this.mReceiver);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +106,53 @@ public class MainActivity extends Activity {
      */
     public void fetchClick(View view) {
 
+        // TESTING
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String url = prefs.getString(PreferencesActivity.RSS_FEED_PREF, "www.google.com");
+
+        url = "https://www.androidauthority.com/feed/";
+
+        Log.d("rsstest", "starting url: " + url);
+
+        //url of RSS feed
+        Parser parser = new Parser();
+        parser.execute(url);
+        parser.onFinish(new Parser.OnTaskCompleted() {
+
+            @Override
+            public void onTaskCompleted(ArrayList<Article> list) {
+
+                //what to do when the parsing is done
+                //the Array List contains all article's data. For example you can use it for your adapter.
+
+                Log.d("rsstest", "task completed successfully");
+
+                // WORKS
+                for (Article article : list) {
+
+                    Log.d("rsstest", ">> title: " + article.getTitle());
+                    Log.d("rsstest", ">> link: " + article.getLink());
+                    Log.d("rsstest", "--");
+                }
+            }
+
+            @Override
+            public void onError() {
+                //what to do in case of error
+                Log.d("rsstest", "there was an error");
+            }
+        });
+
+        Log.d("rsstest", "ending");
+
+
+
+        /*
         updateListView();
 
         // TODO. just show toast
         Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
+        */
     }
 
     /**
@@ -70,7 +161,21 @@ public class MainActivity extends Activity {
     public void updateListView() {
         Log.d("settopictask", "running onUpdateDB. Starting AsyncTask");
         SetTopicsTask setTopicsTask = new SetTopicsTask();
-        setTopicsTask.execute(dbHandler);
+
+        /*
+        In modern API levels only one AsyncTask can be running at once, and RSSFetcherService has an
+        AsyncTask running forever. This task is blocking all other tasks. A (and dirty) fix to this
+        is what I've done here: just make AsyncTask execute in parallel.
+
+        In the future I'll be avoiding having long-lived AsyncTasks
+
+        If you're in IMT3003; see issue #20
+         */
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+            setTopicsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dbHandler);
+        } else {
+            setTopicsTask.execute();
+        }
     }
 
     private class SetTopicsTask extends AsyncTask<DBHandler, Void, ArrayList<Topic>> {

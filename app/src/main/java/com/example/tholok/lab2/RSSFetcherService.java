@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -25,7 +26,22 @@ public class RSSFetcherService extends Service {
         Log.d(LOG_NAME, "I was created!!");
 
         Log.d(LOG_NAME, "Starting dispact thread");
-        new DispatcherTask().execute();
+        DispatcherTask dispatcherTask = new  DispatcherTask();
+
+        /*
+        In modern API levels only one AsyncTask can be running at once, and RSSFetcherService has an
+        AsyncTask running forever. This task is blocking all other tasks. A (and dirty) fix to this
+        is what I've done here: just make AsyncTask execute in parallel.
+
+        In the future I'll be avoiding having long-lived AsyncTasks
+
+        If you're in IMT3003; see issue #20
+         */
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+            dispatcherTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            dispatcherTask.execute();
+        }
     }
 
     @Override
@@ -79,6 +95,9 @@ public class RSSFetcherService extends Service {
 
                 // TODO
                 dbHandler.addTopic(new Topic("From rss fetcher", "www.rss.com"));
+
+                Intent i = new Intent("android.intent.action.DATABASE_UPDATED");
+                RSSFetcherService.this.sendBroadcast(i);
 
 
                 // TODO: make the whole download thing work
