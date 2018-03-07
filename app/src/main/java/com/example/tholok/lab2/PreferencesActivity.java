@@ -65,7 +65,10 @@ public class PreferencesActivity extends Activity {
         timePicker.setCurrentMinute(prefs.getInt(INTERVAL_MINUTE_PREF, 0));
 
         // set max topics
-        maxTopics.setText(Integer.toString(prefs.getInt(MAX_TOPICS_PREF, 0)));
+        String maxTopicsPref = Integer.toString(prefs.getInt(MAX_TOPICS_PREF, 0));
+        if (!maxTopicsPref.equals("0")) {
+            maxTopics.setText(maxTopicsPref);
+        }
     }
 
     /**
@@ -87,7 +90,12 @@ public class PreferencesActivity extends Activity {
 
 
         // save max topics
-        editor.putInt(MAX_TOPICS_PREF, Integer.parseInt(maxTopics.getText().toString()));
+        String maxTopicsString = maxTopics.getText().toString();
+        if (maxTopicsString.isEmpty()) {
+            editor.putInt(MAX_TOPICS_PREF, 0);
+        } else {
+            editor.putInt(MAX_TOPICS_PREF, Integer.parseInt(maxTopicsString));
+        }
 
         // apply
         editor.apply();

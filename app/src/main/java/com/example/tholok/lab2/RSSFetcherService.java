@@ -107,9 +107,15 @@ public class RSSFetcherService extends Service {
      */
     public static void fetch(final Context ctx, final DBHandler dbHandler) {
 
-        // get url from pref
+        // get pref
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+
+        // get url from pref
         String url = prefs.getString(PreferencesActivity.RSS_FEED_PREF, "");
+
+        // get max from pref
+        final int maxTopics = prefs.getInt(PreferencesActivity.MAX_TOPICS_PREF, 0);
+
 
         // clear the database (new rss stuff will completely replace old ones)
         dbHandler.clear();
@@ -128,12 +134,13 @@ public class RSSFetcherService extends Service {
                 Log.d(LOG_NAME, "task completed successfully");
 
                 // for each topic -> debugprint and add to db
-                for (Article article : list) {
-                    Log.d(LOG_NAME, ">> title: " + article.getTitle());
-                    Log.d(LOG_NAME, ">> link: " + article.getLink());
+                // get maximum 'maxTopics' topics
+                // (maxiumum 0 means infinite)
+                for (int i = 0; i < list.size() && (i < maxTopics || maxTopics == 0); ++i) {
+                    Log.d(LOG_NAME, ">> title: " + list.get(i).getTitle());
+                    Log.d(LOG_NAME, ">> link: " + list.get(i).getLink());
                     Log.d(LOG_NAME, "--");
-                    dbHandler.addTopic(new Topic(article.getTitle(), article.getLink()));
-
+                    dbHandler.addTopic(new Topic(list.get(i).getTitle(), list.get(i).getLink()));
                 }
 
                 // notify MainActivity through broadcast receiver
