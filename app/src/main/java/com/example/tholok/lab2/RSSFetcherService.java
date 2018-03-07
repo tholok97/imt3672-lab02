@@ -1,6 +1,7 @@
 package com.example.tholok.lab2;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -9,7 +10,11 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.prof.rssparser.Article;
+import com.prof.rssparser.Parser;
+
 import java.net.URL;
+import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
@@ -104,5 +109,54 @@ public class RSSFetcherService extends Service {
 
             }
         }
+    }
+
+    /**
+     * Fetches from given rss feed and updates db. Also notifies MainActivity of update
+     */
+    public static void fetch(Context ctx) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        String url = prefs.getString(PreferencesActivity.RSS_FEED_PREF, "");
+
+        Log.d(LOG_NAME, "starting url: " + url);
+
+        //url of RSS feed
+        Parser parser = new Parser();
+        parser.execute(url);
+        parser.onFinish(new Parser.OnTaskCompleted() {
+
+            @Override
+            public void onTaskCompleted(ArrayList<Article> list) {
+
+                //what to do when the parsing is done
+                //the Array List contains all article's data. For example you can use it for your adapter.
+
+                Log.d(LOG_NAME, "task completed successfully");
+
+                // WORKS
+                for (Article article : list) {
+
+                    Log.d(LOG_NAME, ">> title: " + article.getTitle());
+                    Log.d(LOG_NAME, ">> link: " + article.getLink());
+                    Log.d(LOG_NAME, "--");
+                }
+
+
+                /*
+                 TODO:
+
+                 Update db with articles from rss. Store title and link.
+                 Notify MainActivity that it should update it's list view
+                 */
+            }
+
+            @Override
+            public void onError() {
+                //what to do in case of error
+                Log.d(LOG_NAME, "there was an error");
+            }
+        });
+
     }
 }

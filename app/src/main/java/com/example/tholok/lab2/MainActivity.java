@@ -106,53 +106,9 @@ public class MainActivity extends Activity {
      */
     public void fetchClick(View view) {
 
-        // TESTING
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String url = prefs.getString(PreferencesActivity.RSS_FEED_PREF, "www.google.com");
+        RSSFetcherService.fetch(this);
 
-        url = "https://www.androidauthority.com/feed/";
-
-        Log.d("rsstest", "starting url: " + url);
-
-        //url of RSS feed
-        Parser parser = new Parser();
-        parser.execute(url);
-        parser.onFinish(new Parser.OnTaskCompleted() {
-
-            @Override
-            public void onTaskCompleted(ArrayList<Article> list) {
-
-                //what to do when the parsing is done
-                //the Array List contains all article's data. For example you can use it for your adapter.
-
-                Log.d("rsstest", "task completed successfully");
-
-                // WORKS
-                for (Article article : list) {
-
-                    Log.d("rsstest", ">> title: " + article.getTitle());
-                    Log.d("rsstest", ">> link: " + article.getLink());
-                    Log.d("rsstest", "--");
-                }
-            }
-
-            @Override
-            public void onError() {
-                //what to do in case of error
-                Log.d("rsstest", "there was an error");
-            }
-        });
-
-        Log.d("rsstest", "ending");
-
-
-
-        /*
-        updateListView();
-
-        // TODO. just show toast
-        Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
-        */
+        Toast.makeText(this, "Force-fetching...", Toast.LENGTH_SHORT).show();
     }
 
     /**
