@@ -98,15 +98,7 @@ public class RSSFetcherService extends Service {
                 // do work
                 Log.d(LOG_NAME, "DOING WORK");
 
-                // TODO
-                dbHandler.addTopic(new Topic("From rss fetcher", "www.rss.com"));
-
-                Intent i = new Intent("android.intent.action.DATABASE_UPDATED");
-                RSSFetcherService.this.sendBroadcast(i);
-
-
-                // TODO: make the whole download thing work
-
+                fetch(RSSFetcherService.this, dbHandler);
             }
         }
     }
@@ -114,10 +106,12 @@ public class RSSFetcherService extends Service {
     /**
      * Fetches from given rss feed and updates db. Also notifies MainActivity of update
      */
-    public static void fetch(Context ctx) {
+    public static void fetch(final Context ctx, final DBHandler dbHandler) {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         String url = prefs.getString(PreferencesActivity.RSS_FEED_PREF, "");
+
+        dbHandler.clear();
 
         Log.d(LOG_NAME, "starting url: " + url);
 
@@ -134,12 +128,17 @@ public class RSSFetcherService extends Service {
 
                 Log.d(LOG_NAME, "task completed successfully");
 
+                ArrayList<Topic> topics = new ArrayList<>();
+
                 // WORKS
                 for (Article article : list) {
 
                     Log.d(LOG_NAME, ">> title: " + article.getTitle());
                     Log.d(LOG_NAME, ">> link: " + article.getLink());
                     Log.d(LOG_NAME, "--");
+
+                    dbHandler.addTopic(new Topic(article.getTitle(), article.getLink()));
+
                 }
 
 
@@ -149,6 +148,11 @@ public class RSSFetcherService extends Service {
                  Update db with articles from rss. Store title and link.
                  Notify MainActivity that it should update it's list view
                  */
+
+
+                Intent i = new Intent("android.intent.action.DATABASE_UPDATED");
+                ctx.sendBroadcast(i);
+
             }
 
             @Override

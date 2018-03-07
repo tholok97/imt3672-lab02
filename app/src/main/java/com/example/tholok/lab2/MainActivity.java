@@ -76,16 +76,12 @@ public class MainActivity extends Activity {
         // prepare dbhandler
         dbHandler = new DBHandler(this, null, null, -1);
 
-
-        // TEST
-        dbHandler.clear();
-        dbHandler.addTopic(new Topic("VG TING", "www.vg.no"));
-        dbHandler.addTopic(new Topic("dagobladet", "www.dag.no"));
+        // update topics
+        RSSFetcherService.fetch(this, dbHandler);
 
         // start service
         Intent intent = new Intent(this, RSSFetcherService.class);
         startService(intent);
-
 
         // update list
         updateListView();
@@ -106,7 +102,7 @@ public class MainActivity extends Activity {
      */
     public void fetchClick(View view) {
 
-        RSSFetcherService.fetch(this);
+        RSSFetcherService.fetch(this, dbHandler);
 
         Toast.makeText(this, "Force-fetching...", Toast.LENGTH_SHORT).show();
     }
