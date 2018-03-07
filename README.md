@@ -1,5 +1,11 @@
 # Solution to lab2 in IMT3673 - Mobile/Wearable Programming
 
+## Tested with these rss-feeds:
+
+* <http://feeds.bbci.co.uk/news/rss.xml?edition=int#>
+* <https://www.vg.no/rss/feed/?categories=1069%2C1070&limit=10&format=rss&keywords=>
+* <http://rss.cnn.com/rss/edition.rss>
+
 ## Lab description
 
 ### The idea

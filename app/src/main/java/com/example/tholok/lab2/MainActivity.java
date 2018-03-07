@@ -163,7 +163,11 @@ public class MainActivity extends Activity {
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             Topic topic = (Topic) adapterView.getItemAtPosition(i);
 
-                            Toast.makeText(MainActivity.this, topic.get_link(), Toast.LENGTH_LONG).show();
+                            // start webview activity with topic link
+                            // TEST: just start it
+                            Intent intent = new Intent(MainActivity.this, DisplayTopicActivity.class);
+                            intent.putExtra("url", topic.get_link());
+                            startActivity(intent);
                         }
                     }
             );

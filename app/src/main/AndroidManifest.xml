@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tholok.lab2">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,9 +23,9 @@
         <service
             android:name=".RSSFetcherService"
             android:enabled="true"
-            android:exported="true"></service>
-    </application>
+            android:exported="true" />
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+        <activity android:name=".DisplayTopicActivity"></activity>
+    </application>
 
 </manifest>
