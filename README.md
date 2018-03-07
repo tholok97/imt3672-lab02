@@ -1,10 +1,18 @@
 # Solution to lab2 in IMT3673 - Mobile/Wearable Programming
 
-## Tested with these rss-feeds:
+## Details about my solution
+
+I use an external library for fetching and parsing RSS, and as far as I know it supports both atom and rss 2.0 feeds.
+
+### Tested with these rss-feeds:
 
 * <http://feeds.bbci.co.uk/news/rss.xml?edition=int#>
 * <https://www.vg.no/rss/feed/?categories=1069%2C1070&limit=10&format=rss&keywords=>
 * <http://rss.cnn.com/rss/edition.rss>
+
+### This project makes use of:
+
+* <https://github.com/prof18/RSS-Parser> for fetching and parsing rss feeds
 
 ## Lab description
 
