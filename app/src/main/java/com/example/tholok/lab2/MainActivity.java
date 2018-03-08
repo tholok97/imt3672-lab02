@@ -36,6 +36,8 @@ public class MainActivity extends Activity {
     private static final String LOG_NAME = "mainlog";
     private DBHandler dbHandler;
 
+    private static final String DEFAULT_RSS_URL = "http://feeds.bbci.co.uk/news/rss.xml?edition=int#";
+
     /*
      Heavily inspired by http://inchoo.net/dev-talk/android-development/broadcast-receiver-from-activity/
      */
@@ -72,6 +74,14 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_a1);
+
+        // set url pref if not set
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!prefs.contains(PreferencesActivity.RSS_FEED_PREF)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(PreferencesActivity.RSS_FEED_PREF, DEFAULT_RSS_URL);
+            editor.apply();
+        }
 
         // prepare dbhandler
         dbHandler = new DBHandler(this, null, null, -1);
