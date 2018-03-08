@@ -4,6 +4,8 @@
 
 I use an external library for fetching and parsing RSS, and as far as I know it supports both atom and rss 2.0 feeds.
 
+**NOTE**: Invalid URLs are handled very badly in this project. Provide valid URLs.
+
 ### Tested with these rss-feeds:
 
 * <http://feeds.bbci.co.uk/news/rss.xml?edition=int#>
