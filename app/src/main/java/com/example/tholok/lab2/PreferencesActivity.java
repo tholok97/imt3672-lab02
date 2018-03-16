@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
+import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -81,8 +82,14 @@ public class PreferencesActivity extends Activity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
 
-        // save RSS feed
-        editor.putString(RSS_FEED_PREF, rssFeed.getText().toString());
+        // save RSS feed IF VALID
+        String rssURLString = rssFeed.getText().toString();
+        if ( URLUtil.isValidUrl(rssURLString)) {
+            editor.putString(RSS_FEED_PREF, rssFeed.getText().toString());
+        } else {
+            // toast that url is invalid format
+            Toast.makeText(this, "URL is malformed. Did not update rss feed", Toast.LENGTH_SHORT).show();
+        }
 
         // save interval
         editor.putInt(INTERVAL_HOUR_PREF, timePicker.getCurrentHour());

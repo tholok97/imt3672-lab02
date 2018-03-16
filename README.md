@@ -4,7 +4,7 @@
 
 I use an external library for fetching and parsing RSS, and as far as I know it supports both atom and rss 2.0 feeds.
 
-**NOTE**: Invalid URLs are handled very badly in this project. Provide valid URLs.
+**NOTE**: Invalid URLs are handled very badly in this project. The UI should prevent you from entering invalid ones into the system however.
 
 ### Tested with these rss-feeds:
 
