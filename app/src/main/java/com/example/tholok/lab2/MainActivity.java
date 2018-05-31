@@ -131,7 +131,7 @@ public class MainActivity extends Activity {
 
         In the future I'll be avoiding having long-lived AsyncTasks
 
-        If you're in IMT3003; see issue #20
+        If you're in IMT3673; see issue #20
          */
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
             setTopicsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dbHandler);
